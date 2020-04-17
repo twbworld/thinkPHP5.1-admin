@@ -1,0 +1,20 @@
+<table id="table_id" class="table table-bordered table-striped table-hover table-sm" style="width: 100%">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>名称</th>
+            <th>描述</th>
+        </tr>
+    </thead>
+    <tbody>
+        {volist name="data" id="vo"}
+        {if $vo.role_id gt 1}
+        <tr data-id="{$vo.role_id}">
+            <td>{$vo.role_id}</td>
+            <td data-order="{$vo.role_name}" data-search="{$vo.role_name}"><input type="text" value="{$vo.role_name}" class="form-control form-control-sm d-inline-block" style="width:100px" onblur="changeTableVal2('admin_role','role_id','{$vo.role_id}','role_name',this)"></td>
+            <td data-order="{$vo.role_desc}" data-search="{$vo.role_desc}"><input type="text" value="{$vo.role_desc}" class="form-control form-control-sm d-inline-block" onblur="changeTableVal2('admin_role','role_id','{$vo.role_id}','role_desc',this)"></td>
+        </tr>
+        {/if}
+        {/volist}
+    </tbody>
+</table>

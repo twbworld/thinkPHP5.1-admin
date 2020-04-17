@@ -1,0 +1,22 @@
+<table id="table_id" class="table table-bordered table-striped table-hover table-sm" style="width: 100%">
+    <thead>
+        <tr>
+            <th>名称</th>
+            <th>描述</th>
+            <th>排序</th>
+        </tr>
+    </thead>
+    <tbody>
+      {volist name="data" id="vo"}
+        <tr data-id="{$vo.cat_id}" class="parent_id_{$vo[parent_id]}" data-level="{$vo[level]}"  id="{$vo.level}_{$vo.cat_id}">
+            <td data-search="{$vo.cat_name}" class="text-left pl-3">
+                <i id="icon_{$vo.level}_{$vo.id}" onClick="treeClicked(this,{$vo[cat_id]})" class="fas fa-angle-down mr-2" style="cursor: pointer;width:10px;margin-left:<?php echo ($vo[level] * 2); ?>em"></i><input type="text" value="{$vo.cat_name}" class="form-control form-control-sm d-inline-block" style="width:100px" onblur="changeTableVal2('article_cat','cat_id','{$vo.cat_id}','cat_name',this)">
+            </td>
+            <td>{$vo.cat_desc}</td>
+            <td data-search="{$vo.sort_order}">
+                <input type="text" value="{$vo.sort_order}" class="form-control form-control-sm d-inline-block" style="width:35px" onblur="changeTableVal2('article_cat','cat_id','{$vo.cat_id}','sort_order',this)">
+            </td>
+        {/volist}
+    </tbody>
+
+</table>

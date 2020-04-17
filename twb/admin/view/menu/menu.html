@@ -1,0 +1,187 @@
+{extend name="../twb/admin/view/public/form.html" /}
+
+{block name="title"}添加/修改{/block}
+
+{block name="body"}
+    <div class="col-md-12 mt-4">
+        <form class="form-horizontal" id="form">
+
+
+            <div class="input-group mb-3 col-sm-5 mx-auto">
+              <div class="input-group-prepend">
+                <label class="input-group-text"><i class="fas fa-chart-pie mr-1"></i>分类</label>
+              </div>
+              <select class="form-control" name="cat_id" id="select">
+                  {volist name="cat" id="vo"}
+                  <option value="{$vo.id}" {if $data.cat_id==$vo.id}selected="selected" {/if}>{$vo.text}</option>
+                  {/volist}
+                  <option value="0" {if $data.cat_id===0}selected="selected" {/if}>一级 </option>
+              </select>
+            </div>
+
+
+            <div class="input-group mb-3 col-sm-5 mx-auto">
+              <div class="input-group-prepend">
+                <span class="input-group-text"><i class="fas fa-heading mr-1"></i>标题</span>
+              </div>
+              <input type="text" name="text" class="form-control" placeholder="请输入标题" value="{$data.text}">
+            </div>
+
+
+            <div class="input-group mb-3 col-sm-5 mx-auto">
+              <div class="input-group-prepend">
+                <span class="input-group-text"><i class="fab fa-font-awesome-flag mr-1"></i>图标</span>
+              </div>
+              <input type="text" name="icon" class="form-control" placeholder="填入class属性" title="访问 www.fontawesome.com 选择合适的图标" value="{$data.icon}">
+            </div>
+
+
+            <div class="input-group mb-3 col-sm-5 mx-auto">
+              <div class="input-group-prepend">
+                <span class="input-group-text"><i class="fas fa-link mr-1"></i>链接</span>
+              </div>
+              <input type="text" name="url" class="form-control url" placeholder="请输入菜单链接" value="{$data.url}">
+            </div>
+
+
+            <div class="input-group mb-3 col-sm-5 mx-auto">
+              <div class="input-group-prepend">
+                <label class="input-group-text"><i class="fas fa-reply-all mr-1"></i>跳转模式</label>
+              </div>
+              <select class="form-control target" name="target">
+                  <option value="0" {if $data.target==0}selected="selected"{/if}>iframe页面(默认)</option>
+                  <option value="1" {if $data.target==1}selected="selected"{/if}>iframe页面最大化</option>
+                  <option value="2" {if $data.target==2}selected="selected"{/if}>新页面</option>
+              </select>
+            </div>
+
+
+            <div class="col-sm-5 mb-3 mx-auto row">
+                <label class="col-sm-12 col-md-3">开启</label>
+                <div class="col-sm-12 col-md-9">
+                    <div class="custom-control custom-radio custom-control-inline">
+                        <input id="customRadio1" class="custom-control-input" type="radio" name="enabled" value="1" checked>
+                        <label class="custom-control-label" for="customRadio1"> 是</label>
+                    </div>
+                    <div class="custom-control custom-radio custom-control-inline">
+                        <input id="customRadio2" class="custom-control-input" type="radio" name="enabled" value="0" {if $data.enabled===0}checked{/if}>
+                        <label class="custom-control-label" for="customRadio2"> 否</label>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="col-sm-5 mb-3 mx-auto row">
+                <label class="col-sm-12 col-md-3">置顶</label>
+                <div class="col-sm-12 col-md-9">
+                    <div class="custom-control custom-radio custom-control-inline">
+                        <input id="customRadio3" type="radio" class="top1 custom-control-input" name="top" value="1" {if $data.top==1}checked{/if}>
+                        <label class="custom-control-label" for="customRadio3"> 是</label>
+                    </div>
+                    <div class="custom-control custom-radio custom-control-inline">
+                        <input id="customRadio4" type="radio" class="top2 custom-control-input" name="top" value="0" {if $data.top==0}checked{/if}>
+                        <label class="custom-control-label" for="customRadio4"> 否</label>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="col-sm-5 mb-3 mx-auto">
+                <input type="hidden" name="id" value="{$data.id}">
+                <input type="hidden" name="act" value="{$act}">
+                <input type="hidden" name="__token__" value="{$Request.token}" />
+                <button type="submit" class="btn btn-primary btn-block">确定</button>
+            </div>
+
+
+        </form>
+    </div>
+{/block}
+
+{block name="script"}
+<script type="text/javascript">
+//选择一级分类执行
+function disabled() {
+    if ($("#select").val() == 0) {
+        $(".target").attr("disabled", true);
+        $(".top1").attr("disabled", true);
+        $(".top2").attr("disabled", true);
+        $(".url").attr("disabled", true);
+    } else {
+        $(".target").attr("disabled", false);
+        $(".top1").attr("disabled", false);
+        $(".top2").attr("disabled", false);
+        $(".url").attr("disabled", false);
+    }
+}
+
+$(function() {
+
+    disabled();
+    $("#select").change(function() {
+        disabled();
+    });
+
+
+
+    //表单验证
+    $("#form").validate({
+        rules: {
+            text: {
+                required: true,
+                minlength: 2,
+                maxlength: 10,
+            },
+            url:{
+                url:false
+            },
+            cat_id: "required",
+            enabled: "required",
+            target: "required",
+            top: "required"
+        },
+        errorClass: "validate_error",
+        errorElement: "em",
+        //设置报错位置
+        errorPlacement: function(error, element) {
+            error.insertAfter(element);
+            // error.insertAfter(element.parents('.col-sm-5'));
+        },
+
+        submitHandler: function(form) {
+            var index = layer.load(0, { shade: false }); //"加载中"弹窗
+            $(form).ajaxSubmit({
+                dataType: 'json',
+                type: 'post',
+                url: "/admintp/Menu/menuHandle",
+                success: function(data) {
+                    layer.close(index); //关闭弹窗
+                    if (data.code == 1) {
+                        //success弹窗
+                        layer.msg(data.msg, { icon: 6, time: data.wait * 1000, anim: 1, skin: 'layui-layer-molv' }, function() {
+                            if (data.url) {
+                                parent.location.href = data.url;
+                            }
+                        });
+                    } else {
+                        layer.msg(data.msg, { icon: 5, time: data.wait * 1000, anim: 2, skin: 'layui-layer-molv' });
+                    }
+
+                },
+                error: function(XmlHttpRequest, textStatus, errorThrown) {
+                    layer.close(index);
+                    layer.msg('网络错误', { icon: 5, time: 1500, anim: 6, skin: 'layui-layer-molv' });
+                }
+            });
+            // $(form).resetForm(); // 提交后重置表单
+            return false; // 阻止表单自动提交
+        }
+    });
+
+
+
+});
+</script>
+{__block__}<!-- 继承原js -->
+
+{/block}

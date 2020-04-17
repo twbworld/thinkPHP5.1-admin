@@ -1,0 +1,78 @@
+{extend name="../twb/admin/view/public/recycle.html" /}
+
+{block name="body"}
+<section class="px-3 pb-3 m-auto">
+    <div class="card-header border-primary bg-transparent">
+        <div class="btn-group float-right"  role="group" aria-label="Basic example">
+            <button title="恢复" onclick="layer_recycle('restore')" class="btn btn-success" type="button"><i class="fas fa-reply fa-lg"></i></button>
+            <button title="永久删除" onclick="layer_recycle('del')" class="btn btn-danger" type="button"> <i class="fas fa-times fa-lg"></i></button>
+            <button title="全选" onclick="check_all(this)" class="btn btn-warning" type="button"> <i class="fas fa-check-double fa-lg selected-ico"></i></button>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+    <div class="table-responsive-md" style="padding: 10px 0">
+        <table id="table_id" class="table table-bordered table-striped table-hover table-sm display w-100">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>名称</th>
+                    <th>描述</th>
+                    <th>删除时间</th>
+                </tr>
+            </thead>
+            <tbody>
+              {volist name="data" id="vo"}
+                <tr data-id="{$vo.role_id}">
+                    <td>{$vo.role_id}</td>
+                    <td>{$vo.role_name}</td>
+                    <td>{$vo.role_desc}</td>
+                    <td>{$vo.delete_time|date='Y-m-d H:i'}</td>
+                </tr>
+                {/volist}
+            </tbody>
+        </table>
+    </div>
+</section>
+{/block}
+
+{block name="script"}
+<script type="text/javascript">
+$(function() {
+
+    /*DataTables表格配置*/
+    $('#table_id').DataTable({
+        order: [[3,'desc']],//默认排序
+        orderClasses: true,//排序的列高亮,class给sorting_1和sorting_2
+        renderer: "bootstrap",//指定渲染器,不设置一样
+        deferRender: true,//大量数据则延迟渲染
+        scrollX: false,// 水平滚动条
+        // scrollY: 180,// 垂直滚动条,固定高
+        scrollCollapse: false,//(当显示更少的记录时，表格减少高度)
+        lengthChange: true,//开启数量选择
+        lengthMenu: [5, 25, 50,100],//数量选择的类型
+        pageLength: 5,//默认数量
+        autoWidth: true,//自动列宽
+        stripeClasses: ['strip1'],//斑马条效果的class
+        language: {
+            url: '__STATIC__/admin/js/dataTable_zh-cn.js'
+        },
+        columnDefs: [
+            {   "targets": [2],//指定列
+                "orderable": false,//禁用列排序
+            },{ "targets": [1],
+                "className": "text_h",//设置列class
+            }
+
+        ],
+        fixedHeader: true//表头固定
+
+    });
+
+
+});
+
+
+</script>
+{__block__}<!-- 继承原js -->
+
+{/block}

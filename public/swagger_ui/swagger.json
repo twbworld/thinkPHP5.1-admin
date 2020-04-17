@@ -1,0 +1,416 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "My First APIS [这里](https://www.baidu.com)",
+        "description": "my project 接口文档, V2-3.<br>以后大家就在这里愉快的对接口把!<br>以后大家就在这里愉快的对接口把!",
+        "version": "1.0"
+    },
+    "servers": [
+        {
+            "url": "http://www.baidu.top",
+            "description": "hello world"
+        }
+    ],
+    "paths": {
+        "/index/swagger.html": {
+            "post": {
+                "tags": [
+                    "shop"
+                ],
+                "summary": "典型接口",
+                "description": "# 这是接口描述,支持MD语法",
+                "externalDocs": {
+                    "description": "测试用例地址",
+                    "url": "http://swagger.io"
+                },
+                "operationId": "home-index-swagger",
+                "parameters": [
+                    {
+                        "name": "X-Requested-With",
+                        "in": "header",
+                        "description": "制造Ajax请求头",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "XMLHttpRequest"
+                    }
+                ],
+                "requestBody": {
+                    "description": "Post请求Body,这里比较奇怪,不能发送索引数组",
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/request-user"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "default": {
+                        "description": "成功",
+                        "headers": {
+                            "set-cookie": {
+                                "description": "设置cookie",
+                                "schema": {
+                                    "type": "string",
+                                    "example": "PHPSESSID=dos17fqe63c98vdfffjt3kjjo7"
+                                },
+                                "allowEmptyValue": true
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/response-home-index-swagger"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/index/swagger.html?id={id}": {
+            "post": {
+                "tags": [
+                    "shop",
+                    "user"
+                ],
+                "summary": "接口示例",
+                "description": "# 这是接口描述,支持MD语法",
+                "externalDocs": {
+                    "description": "测试用例地址",
+                    "url": "http://swagger.io"
+                },
+                "operationId": "home-index-swagger-id",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "这个值用于url",
+                        "required": true,
+                        "style": "form",
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64",
+                            "maximum": 10,
+                            "minimum": 1
+                        },
+                        "example": 1
+                    },
+                    {
+                        "name": "id2",
+                        "in": "query",
+                        "description": "这个值用于url",
+                        "required": true,
+                        "style": "form",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": 2
+                    },
+                    {
+                        "name": "img[]",
+                        "in": "query",
+                        "description": "传递数组格式",
+                        "required": true,
+                        "explode": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "ab",
+                                    "bc",
+                                    "cd"
+                                ]
+                            },
+                            "default": [
+                                "ab",
+                                "cd"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "userid",
+                        "in": "cookie",
+                        "description": "设置cookie;这里比较奇怪,设置不了cookie",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "3231"
+                    },
+                    {
+                        "name": "Cookie",
+                        "in": "header",
+                        "description": "设置cookie;这里比较奇怪,设置不了cookie",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "PHPSESSID=dos17fqe63c98vdfffjt3kjjo7"
+                    },
+                    {
+                        "name": "X-Requested-With",
+                        "in": "header",
+                        "description": "制造Ajax请求头",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "XMLHttpRequest"
+                    }
+                ],
+                "requestBody": {
+                    "description": "Post请求Body",
+                    "content": {
+                        "application/json; charset=UTF-8": {
+                            "schema": {
+                                "$ref": "#/components/schemas/request-user"
+                            },
+                            "example": {
+                                "name": "aaa",
+                                "img": [
+                                    "1",
+                                    "2"
+                                ],
+                                "type": "open"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "headers": {
+                            "set-cookie": {
+                                "description": "设置cookie",
+                                "schema": {
+                                    "type": "string",
+                                    "example": "PHPSESSID=dos17fqe63c98vdfffjt3kjjo7"
+                                },
+                                "allowEmptyValue": true
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/response-home-index-swagger"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "成功",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "status"
+                                    ],
+                                    "properties": {
+                                        "status": {
+                                            "description": "状态;0:成功;1:失败",
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "message": {
+                                            "description": "数据",
+                                            "type": "string",
+                                            "example": "error"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "petstore_auth": [
+                            "write:pets",
+                            "read:pets"
+                        ]
+                    }
+                ]
+            }
+        },
+        "/index/swagger2.html": {
+            "post": {
+                "tags": [
+                    "user"
+                ],
+                "summary": "上传文件接口",
+                "description": "# 这是接口描述,支持MD语法",
+                "externalDocs": {
+                    "description": "测试用例地址",
+                    "url": "http://swagger.io"
+                },
+                "operationId": "home-index-swagger-upload",
+                "parameters": [
+                    {
+                        "name": "X-Requested-With",
+                        "in": "header",
+                        "description": "制造Ajax请求头",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "XMLHttpRequest"
+                    }
+                ],
+                "requestBody": {
+                    "description": "Post请求Body",
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "upload_file"
+                                ],
+                                "properties": {
+                                    "upload_file": {
+                                        "description": "上传文件",
+                                        "type": "file"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "default": {
+                        "description": "成功",
+                        "headers": {
+                            "set-cookie": {
+                                "description": "设置cookie",
+                                "schema": {
+                                    "type": "string",
+                                    "example": "PHPSESSID=dos17fqe63c98vdfffjt3kjjo7"
+                                },
+                                "allowEmptyValue": true
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/response-home-index-swagger"
+                                }
+                            }
+                        }
+                    }
+                },
+                "deprecated": true
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "request-user": {
+                "required": [
+                    "name",
+                    "img"
+                ],
+                "properties": {
+                    "name": {
+                        "description": "名称",
+                        "type": "string",
+                        "maxLength": 10,
+                        "minLength": 3
+                    },
+                    "img": {
+                        "description": "相册",
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "pattern": "^[1-9]"
+                        },
+                        "default": [
+                            "a",
+                            "v"
+                        ]
+                    },
+                    "type": {
+                        "description": "模式",
+                        "type": "string",
+                        "default": "merged",
+                        "enum": [
+                            "open",
+                            "merged",
+                            "declined"
+                        ]
+                    }
+                },
+                "type": "object"
+            },
+            "response-home-index-swagger": {
+                "required": [
+                    "status"
+                ],
+                "properties": {
+                    "status": {
+                        "description": "状态;0:成功;1:失败",
+                        "type": "integer",
+                        "example": 0
+                    },
+                    "data": {
+                        "description": "数据",
+                        "$ref": "#/components/schemas/response-goods"
+                    }
+                },
+                "type": "object"
+            },
+            "response-goods": {
+                "properties": {
+                    "goods": {
+                        "description": "商品数据",
+                        "type": "array",
+                        "items": {
+                            "required": [
+                                "goods_name"
+                            ],
+                            "properties": {
+                                "goods_name": {
+                                    "description": "商品名",
+                                    "type": "string",
+                                    "example": ""
+                                },
+                                "price": {
+                                    "description": "价格",
+                                    "type": "string",
+                                    "example": "0.00"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                },
+                "type": "object"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "shop",
+            "description": "商城",
+            "externalDocs": {
+                "description": "获取更多商城信息",
+                "url": "http://swagger.io"
+            }
+        },
+        {
+            "name": "user",
+            "description": "用户中心",
+            "externalDocs": {
+                "description": "获取更多商城信息",
+                "url": "http://swagger.io"
+            }
+        }
+    ],
+    "externalDocs": {
+        "description": "关于项目",
+        "url": "http://swagger.io"
+    }
+}

@@ -1,0 +1,220 @@
+{extend name="../twb/admin/view/public/form.html" /}
+
+{block name="title"}添加/修改{/block}
+
+{block name="body"}
+    <div class="col-md-12 mt-4">
+        <form class="form-horizontal" id="form">
+
+
+            <div class="input-group mb-3 col-sm-5 mx-auto">
+              <div class="input-group-prepend">
+                <span class="input-group-text"><i class="fas fa-heading mr-1"></i>名称</span>
+              </div>
+              <input type="text" name="name" class="form-control" placeholder="请输入权限资源名称" value="{$data.name}">
+            </div>
+
+
+            <div class="input-group mb-3 col-sm-5 mx-auto">
+              <div class="input-group-prepend">
+                <label class="input-group-text"><i class="fas fa-layer-group mr-1"></i>分组</label>
+              </div>
+              <select class="form-control" name="group">
+                {volist name="group" id="vo"}
+                    <option value="{$key}" {if $data.group == $key}selected{/if}>{$vo}</option>
+                {/volist}
+              </select>
+            </div>
+
+            <div class="card col-sm-5 mx-auto p-3 mb-3">
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <label class="input-group-text"><i class="fas fa-key mr-1"></i>权限</label>
+                  </div>
+                  <select class="form-control" id="controller" onchange="get_act_list(this)">
+                    <option value="">选择控制器</option>
+                    {volist name="planList" id="vo"}
+                        <option value="{$vo}">{$vo}</option>
+                    {/volist}
+                  </select>
+                </div>
+                <div class="text-right">
+                    <ul class="list-group col-sm-9 p-0 d-inline-block" id="list-group">
+                    </ul>
+                </div>
+                <table class="table table-borderless table-sm table-hover m-0 mt-1">
+                    <tbody id="rightList">
+                        {volist name="data.right" id="vo"}
+                            <tr id="{:str_replace('@','_',$vo)}">
+                                <td class="text-center align-middle"><i class="far fa-trash-alt pointer" onclick="updateActCheck(this);$(this).parent().parent().remove()"></i></td>
+                                <td><input type="text" class="form-control" name="right[]" value="{$vo}"></td>
+                            </tr>
+                        {/volist}
+                    </tbody>
+                </table>
+            </div>
+
+
+            <div class="col-sm-5 mb-3 mx-auto">
+                <input type="hidden" name="id" value="{$data.id}">
+                <input type="hidden" name="act" value="{$act}">
+                <input type="hidden" name="__token__" value="{$Request.token}" />
+                <button type="submit" class="btn btn-primary btn-block">确定</button>
+            </div>
+
+
+        </form>
+    </div>
+{/block}
+
+
+{block name="script"}
+<script type="text/javascript">
+
+$(function() {
+
+    /*表单验证*/
+    $("#form").validate({
+        rules: {
+            name: {
+                required: true,
+                minlength: 2
+            },
+            group: "required",
+            id: "required",
+            act: "required",
+            __token__: "required"
+        },
+        errorClass: "validate_error",
+        errorElement: "em",
+        //设置报错位置
+        errorPlacement: function(error, element) {
+            error.insertAfter(element);
+            // error.insertAfter(element.parents('.col-sm-5'));
+        },
+
+        submitHandler: function(form) {
+            if($('input[name="right[]"').val() == undefined){
+                layer.msg('权限码不能为空！', { icon: 5, time: 2000, anim: 2, skin: 'layui-layer-molv' });
+                return false;
+            }
+            var index = layer.load(0, { shade: false }); //"加载中"弹窗
+            $(form).ajaxSubmit({
+                dataType: 'json',
+                type: 'post',
+                url: "/admintp/system/rightHandle",
+                success: function(data) {
+                    layer.close(index); //关闭弹窗
+                    if (data.code == 1) {
+                        //success弹窗
+                        layer.msg(data.msg, { icon: 6, time: data.wait * 1000, anim: 1, skin: 'layui-layer-molv' }, function() {
+                            if (data.url) {
+                                parent.location.href = data.url;
+                            }
+                        });
+                    } else {
+                        layer.msg(data.msg, { icon: 5, time: data.wait * 1000, anim: 2, skin: 'layui-layer-molv' });
+                    }
+
+                },
+                error: function(XmlHttpRequest, textStatus, errorThrown) {
+                    layer.close(index);
+                    layer.msg('网络错误', { icon: 5, time: 1500, anim: 6, skin: 'layui-layer-molv' });
+                }
+            });
+            // $(form).resetForm(); // 提交后重置表单
+            return false; // 阻止表单自动提交
+        }
+    });
+
+
+
+});
+
+
+
+/*ajax获取相应权限,生成列表*/
+function get_act_list(obj){
+    $.ajax({
+        data: {'controller':$(obj).val()},
+        url: "/admintp/system/ajaxGetAction",
+        type:'post',
+        dataType:'json',
+        success:function(data){
+            var html = '';
+            $.each(data,function(index,element){
+                html += "<li class='list-group-item list-group-item-action'><div class='custom-control custom-checkbox text-left'><input type='checkbox' class='custom-control-input' name='act_list' value='"+element+"' id='customCheck"+index+"'><label class='custom-control-label' for='customCheck"+index+"'>"+element+"</label></div></li>";
+            });
+
+            $('#list-group').empty().append(html);//清空,重新赋值
+            chkbox_bind();
+            updateActCheck();
+        }
+    });
+}
+
+/*合成并添加权限码*/
+function chkbox_bind(){
+    $('input:checkbox').change(function () {
+        var is_check = $(this).prop('checked');//检查是否被选中
+        var ncode = $('#controller').val();
+        var row_id = ncode+'_'+ $(this).val();
+        if(is_check){
+            var a = [];
+            $('#rightList .form-control').each(function(i,o){
+                if($(o).val() != ''){
+                    a.push($(o).val());//获取已有的权限码
+                }
+            });
+            if(ncode !== ''){
+                var temp = ncode+'@'+ $(this).val();//生成value值
+                if($.inArray(temp,a) != -1){
+                    return ;//判断将要新增的权限码 是否与已有权限码重合
+                }
+            }else{
+                layer.alert("请选择权限" , {icon:2,time:1000});
+                return;
+            }
+
+            var strtr = '<tr id="'+row_id+'"><td class="text-center align-middle"><i class="far fa-trash-alt pointer" onclick="updateActCheck(this);$(this).parent().parent().remove();"></i></td><td><input type="text" class="form-control" name="right[]" value="';
+            strtr += ncode!= ''? ncode+'@'+ $(this).val()+'"></td></tr>' : '"></td></tr>';
+            $('#rightList').append(strtr);
+        }else{
+            $("#"+row_id).remove();//如果是没选中状态,则清除权限码
+        }
+    });
+}
+
+
+/*更新checkbox(分两种情况,1:ajax生成下拉框后,选上已有的checkbox,2:删除权限码后,取消选择对应的checkbox)*/
+function updateActCheck(del) {
+    var acts = $('#rightList input'),
+        controller = $('#controller').val(),
+        tr_val=$(del).parent().next().children().val();
+    if (controller) {
+        $('input:checkbox').each(function(){
+            var act = controller +'@'+ $(this).val();
+            if (tr_val) {
+                // 情况1
+                if (tr_val === act) {
+                    $(this).next().click();//点击对应的label(从而点击checkbox)
+                }
+            }else{
+                // 情况2
+                for (var i = 0; i < acts.length; i++) {
+                    if ($(acts[i]).val() === act) {
+                        $(this).next().click();
+                        break;
+                    }
+                }
+            }
+        });
+    }
+}
+
+
+
+</script>
+{__block__}<!-- 继承原js -->
+
+{/block}

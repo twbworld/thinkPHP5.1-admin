@@ -1,0 +1,50 @@
+<table id="table_id" class="table table-bordered table-striped table-hover table-sm" style="width: 100%">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>标题</th>
+            <th>分类</th>
+            <th>外链</th>
+            <th>创建</th>
+            <th>修改</th>
+            <th>发布</th>
+            <th>浏览</th>
+            <th>开启</th>
+            <th>置顶</th>
+        </tr>
+    </thead>
+    <tbody>
+        {volist name="data" id="vo"}
+        <tr data-id="{$vo.article_id}">
+            <td>{$vo.article_id}</td>
+            <td data-order="{$vo.title}" data-search="{$vo.title}"><input type="text" value="{$vo.title}" class="form-control form-control-sm d-inline-block" onblur="changeTableVal2('article','article_id','{$vo.article_id}','title',this)"></td>
+            <td>{$vo.category}</td>
+            <td>{$vo.link}</td>
+            <td>{$vo.create_time|date='Y-m-d'}</td>
+            <td>{$vo.update_time|date='Y-m-d H:i'}</td>
+            <td>{$vo.publish_time|date='Y-m-d'}</td>
+            <td>{$vo.click}</td>
+
+            {if $vo.is_open==1}
+            <td data-order='1'>
+            <i class="fa-lg far fa-check-circle yes" onClick="changeTableVal('article','article_id','{$vo.article_id}','is_open',this)"></i>
+            </td>
+            {else /}
+            <td data-order='0'>
+            <i class="fa-lg far fa-times-circle no" onClick="changeTableVal('article','article_id','{$vo.article_id}','is_open',this)"></i>
+            </td>
+            {/if}
+
+            {if $vo.is_top==1}
+            <td data-order='1'>
+            <i class="fa-lg far fa-check-circle yes" onClick="changeTableVal('article','article_id','{$vo.article_id}','is_top',this)"></i>
+            </td>
+            {else /}
+            <td data-order='0'>
+            <i class="fa-lg far fa-times-circle no" onClick="changeTableVal('article','article_id','{$vo.article_id}','is_top',this)"></i>
+            </td>
+            {/if}
+        </tr>
+        {/volist}
+    </tbody>
+</table>

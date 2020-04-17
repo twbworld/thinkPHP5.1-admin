@@ -1,0 +1,182 @@
+{extend name="../twb/admin/view/public/list.html" /}<!-- 模板继承 -->
+
+{block name="title"}文章分类{/block}
+
+{block name="body"}
+
+<section class="p-3 m-auto">
+    <div class="card">
+        <div class="card-header border-primary bg-transparent py-2">
+                <h5 class="text-center float-left m-0" style="line-height: 38px"><i class="fas fa-bars"></i>&nbsp;文章分类</h5>
+                <div class="btn-group float-right"  role="group" aria-label="Basic example">
+                    <button title="修改 / 添加" onclick="layer_handle('{:url("admintp/Article/category")}')" class="btn btn-success" type="button"> <i class="fas fa-pencil-alt fa-lg"></i></button>
+                    <button title="删除 / 回收站" onclick="layer_handle('{:url("admintp/Article/categoryRecycle")}','/admintp/Article/categoryHandle')" class="btn btn-danger" type="button"><i class="far fa-trash-alt fa-lg"></i></button>
+                    <button title="全选" onclick="check_all(this)" class="btn btn-warning" type="button"> <i class="fas fa-check-double fa-lg selected-ico"></i></button>
+                </div>
+            <div class="clearfix"></div>
+        </div>
+        <div id="flexigrid" class="card-body table-responsive-md py-3">
+            <!--ajax 返回 -->
+        </div>
+    </div>
+</section>
+
+{/block}
+
+
+{block name="script"}
+<script type="text/javascript">
+
+$(function (){
+    ajax_get_table('/admintp/Article/ajaxCategoryList');// ajax加载列表
+});
+
+/*DataTables表格配置和初始化*/
+function dataTable_ajax() {
+    /*DataTables表格配置*/
+    $('#table_id').DataTable({
+        order: false,//禁用排序
+        info:false,//禁用左下角信息
+        paging:false,//禁用分页
+        renderer: "bootstrap",//指定渲染器,不设置一样
+        deferRender: true,//大量数据则延迟渲染
+        scrollX: false,// 水平滚动条
+        // scrollY: 250,// 垂直滚动条,固定高
+        scrollCollapse: false,//(当显示更少的记录时，表格减少高度)
+        autoWidth: true,//自动列宽
+        stripeClasses: ['strip1'],//斑马条效果的class
+        lengthChange: false,//开启数量选择
+        //国际化,这里直接链接文件
+        language: {
+            url: '__STATIC__/admin/js/dataTable_zh-cn.js'
+        },
+        //列的操作
+        columnDefs: [
+            {   "targets": [0,1,2],//指定列
+                "orderable": false,//禁用列排序
+            },{ "targets": [0,2],
+                "render": function (data,type) {
+                    //判断正交数据的'显示数据'类型
+                    if (type === 'export') {
+                        var a = document.createElement("a");
+                        a.innerHTML = data;//把字符串data转换成dom节点
+                        return  a.childNodes[1]?a.childNodes[1].value:a.childNodes[0].value;//return dom节点的value值
+                    }else{return data;}
+                }
+            },{
+                "targets":[0],
+                "responsivePriority":0//列的自适应隐藏等级
+            }
+
+        ],
+        /*
+        显示位置,这用了bootstrap4所对应的class,具体参考文档的dom模块
+        l:数量选择,f:搜索过滤,t:表格,r:(应该是表行),i:表信息,p:分页,B:导出按钮
+        */
+        dom: "<'w-100'<'float-left mr-1'l><'float-left'f><'float-right'B><'clearfix'>>"+"<'row'<'col-sm-12'tr>>"+"<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
+        // dom: "Blfrtip",
+        //导出表格操作
+        buttons: [
+            {   "extend": 'colvis',//筛选列
+                "text": '',// 按钮显示文字
+                "className": 'fas fa-filter btn-info',//设置class
+                "titleAttr": '筛选列',//设置title属性
+                "columns": [1,2]//允许筛选的列
+            },{
+                extend: 'collection',
+                text: '',
+                className: 'fas fa-file-export btn-secondary',
+                titleAttr:  '导出表格',
+                autoClose: true,//选择后,自动关闭
+                buttons: [
+                    {  "extend": 'excel',//导出excel的扩展
+                        "text": '',
+                        "className": 'far fa-file-excel fa-2x text-center',
+                        "titleAttr":  'Excel文件',
+                        "exportOptions":{
+                            columns: [0,1,2],//指定打印的列
+                            orthogonal: 'export'//为信息显示设置特定的正交数据请求类型(作用于render事件所返回的type值)
+                        }
+                    },{ "extend": 'csv',
+                        "text": '',
+                        "className": 'fas fa-file-csv fa-2x text-center',
+                        "titleAttr":  'CSV文件',
+                        "exportOptions":{
+                            columns: [0,1,2],
+                            orthogonal: 'export'//为信息显示设置特定的正交数据请求类型(作用于render事件所返回的type值)
+                        }
+                    },{ "extend": 'pdf',
+                        "text": '',
+                        "className": 'far fa-file-pdf fa-2x text-center',
+                        "titleAttr":  'PDF文件',
+                        "exportOptions":{
+                            columns: [0,1,2],
+                            orthogonal: 'export'//为信息显示设置特定的正交数据请求类型(作用于render事件所返回的type值)
+                        }
+                    },{ "extend": 'copy',
+                        "text": '',
+                        "className": 'far fa-copy fa-2x text-center',
+                        "titleAttr":  '复制到剪贴板',
+                        "exportOptions":{
+                            columns: [0,1,2],
+                            orthogonal: 'export'//为信息显示设置特定的正交数据请求类型(作用于render事件所返回的type值)
+                        }
+                    },{ "extend": 'print',
+                        "text": '',
+                        "className": 'fas fa-print fa-2x text-center',
+                        "titleAttr":  '打印',
+                        "exportOptions":{
+                            columns: [0,1,2],
+                            orthogonal: 'export'//为信息显示设置特定的正交数据请求类型(作用于render事件所返回的type值)
+                        }
+                    }]
+            }],
+        colReorder: true,//列排序
+        keys: true,//单元格焦点
+        responsive: true,//自适应
+        fixedHeader: true,//表头固定
+
+    });
+
+}
+
+
+/*分类树操作*/
+function treeClicked(obj,cat_id){
+    if($(obj).hasClass('fa-angle-right'))
+    {
+     $(".parent_id_"+cat_id).show();//if收缩状态,点击则展开子分类
+     $(obj).removeClass('fa-angle-right').addClass('fa-angle-down');
+    }else{
+     $(obj).removeClass('fa-angle-down').addClass('fa-angle-right');
+     cur_tr = obj.parentNode.parentNode;//i标签的父父节点tr
+     var tbl = document.getElementById("table_id"),
+         fnd = false;
+        for (i = 0; i < tbl.rows.length; i++)
+        {
+            var row = tbl.rows[i];//获取遍历的当前tr
+            if (row == cur_tr){
+              fnd = true;//如果遍历到的tr和点击的tr是同一个tr,则做好收缩其子分类的准备
+            }else{
+                //开始收缩其子分类
+                if (fnd == true){
+                    if (parseInt($(row).data('level')) > $(cur_tr).data('level')){
+                        $(row).hide();//if遍历的等级数字大于点击的tr,则隐藏
+                        $(row).find('i').removeClass('fa-angle-down').addClass('fa-angle-right');
+                    }else{
+                        fnd = false;//结束收缩子分类
+                        break;
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+</script>
+
+{__block__}<!-- 继承原js -->
+
+{/block}
+
