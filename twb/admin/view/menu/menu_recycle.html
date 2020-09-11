@@ -1,0 +1,139 @@
+{extend name="../twb/admin/view/public/recycle.html" /}
+
+{block name="body"}
+<section class="px-3 pb-3 m-auto">
+    <div class="card-header border-primary bg-transparent">
+        <div class="btn-group float-right"  role="group" aria-label="Basic example">
+            <button title="恢复" onclick="layer_recycle('restore')" class="btn btn-success" type="button"><i class="fas fa-reply fa-lg"></i></button>
+            <button title="永久删除" onclick="layer_recycle('del')" class="btn btn-danger" type="button"> <i class="fas fa-times fa-lg"></i></button>
+            <button title="全选" onclick="check_all(this)" class="btn btn-warning" type="button"> <i class="fas fa-check-double fa-lg selected-ico"></i></button>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+    <div class="table-responsive-md" style="padding: 10px 0">
+        <table id="table_id" class="table table-bordered table-striped table-hover table-sm display w-100">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>标题</th>
+                    <th>分类</th>
+                    <th>图标</th>
+                    <th>跳转模式</th>
+                    <th>链接</th>
+                    <th>开启</th>
+                    <th>置顶</th>
+                    <th>删除时间</th>
+                </tr>
+            </thead>
+            <tbody>
+              {volist name="data" id="vo"}
+                <tr data-id="{$vo.id}">
+                    <td>{$vo.id}</td>
+                    <td>{$vo.text}</td>
+                    <td>{$vo.cat_id}</td>
+                    <td>{$vo.icon}</td><!-- 这由插件组成i标签 -->
+                    <td>{$vo.target}</td>
+                    <td>{$vo.url}</td>
+
+                    {if $vo.enabled==1}
+                    <td data-order='1'>
+                    <i class="fa-lg fas fa-check-square yes"></i>
+                    </td>
+                    {else /}
+                    <td data-order='0'>
+                    <i class="fa-lg far fa-times-circle no"></i>
+                    </td>
+                    {/if}
+
+                    {if $vo.cat_id == '一级'}
+                    <td data-order='3'>
+                    <i class="fas fa-ban fa-lg"></i>
+                    </td>
+                    {elseif $vo.top==1}
+                    <td data-order='1'>
+                    <i class="fa-lg fas fa-check-square yes"></i>
+                    </td>
+                    {else /}
+                    <td data-order='2'>
+                    <i class="fa-lg far fa-times-circle no"></i>
+                    </td>
+                    {/if}
+
+                    <td>{$vo.delete_time|date='Y-m-d H:i'}</td>
+
+                </tr>
+                {/volist}
+            </tbody>
+        </table>
+    </div>
+</section>
+{/block}
+
+{block name="script"}
+<script type="text/javascript">
+$(function() {
+
+    /*DataTables表格配置*/
+    $('#table_id').DataTable({
+        order: [[8,'desc']],//默认排序
+        orderClasses: true,//排序的列高亮,class给sorting_1和sorting_2
+        renderer: "bootstrap",//指定渲染器,不设置一样
+        deferRender: true,//大量数据则延迟渲染
+        scrollX: false,// 水平滚动条
+        // scrollY: 180,// 垂直滚动条,固定高
+        scrollCollapse: false,//(当显示更少的记录时，表格减少高度)
+        lengthChange: true,//开启数量选择
+        lengthMenu: [5, 25, 50,100],//数量选择的类型
+        pageLength: 5,//默认数量
+        autoWidth: true,//自动列宽
+        stripeClasses: ['strip1'],//斑马条效果的class
+        language: {
+            url: '__STATIC__/admin/js/dataTable_zh-cn.js'
+        },
+        columnDefs: [
+            {   "targets": [3,4,5,6,7],//指定列
+                "orderable": false,//禁用列排序
+            },{ "targets": [3,6,7],
+                "searchable": false, //禁用列搜索
+            },{ "targets": [1],
+                "className": "text_h",//设置列class
+            },{ "targets": [2],
+                "createdCell": function (td,cellData) {
+                 if (cellData=='一级')$(td).css({'color':'red'});
+               }
+            },{
+                "targets": [3],
+                "render": function (data) {
+                  return '<i class="'+data+'"></i>';//组成图标,可用于组成图片
+                }
+            },{
+                "targets": [4],
+                "render": function (data) {
+                   switch(data){
+                    case '0': return 'iframe页面 (默认)';break;
+                    case '1': return 'iframe页面最大化';break;
+                    case '2': return '新页面';break;
+                    default:  return '(无)';break;
+                  }
+                }
+            },{
+                "targets": [5],
+                "render": function (data,type,row) {
+                  return type === 'display' && data.length > 30 ?
+                          '<span title="'+data+'">'+data.substr(0,28)+'...</span>':data;//显示类型&&过长则省略
+                }
+            },
+
+        ],
+        fixedHeader: true//表头固定
+
+    });
+
+
+});
+
+
+</script>
+{__block__}<!-- 继承原js -->
+
+{/block}

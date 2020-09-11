@@ -1,0 +1,236 @@
+{extend name="../twb/admin/view/public/list.html" /}<!-- 模板继承 -->
+
+{block name="title"}文章列表{/block}
+
+{block name="body"}
+
+<section class="p-3 m-auto">
+    <div class="card">
+        <div class="card-header border-primary bg-transparent py-2">
+            <h5 class="text-center float-left m-0" style="line-height: 38px"><i class="fas fa-bars"></i>&nbsp;文章列表</h5>
+            <div class="btn-group float-right"  role="group" aria-label="Basic example">
+                <button title="修改 / 添加" onclick="layer_handle('{:url("admintp/article/article")}')" class="btn btn-success" type="button"> <i class="fas fa-pencil-alt fa-lg"></i></button>
+                <button title="删除 / 回收站" onclick="layer_handle('{:url("admintp/article/articleRecycle")}','/admintp/Article/articleHandle')" class="btn btn-danger" type="button"><i class="far fa-trash-alt fa-lg"></i></button>
+                <button title="全选" onclick="check_all(this)" class="btn btn-warning" type="button"> <i class="fas fa-check-double fa-lg selected-ico"></i></button>
+            </div>
+            <form id="search-form" class="float-right col-sm-4 input-group" title="创建时间搜索">
+                <input type="text" class="form-control text-center" id="start_time" name="start_time">
+                <input type="text" class="form-control text-center" id="end_time" name="end_time">
+                <div class="input-group-prepend">
+                <button type="button" class="btn btn-light border border-left-0 rounded-right" onclick="ajax_get_table('/admintp/Article/ajaxArticleList','search-form')"><i class="fas fa-search"></i></button>
+                </div>
+            </form>
+            <div class="clearfix"></div>
+        </div>
+        <div id="flexigrid" class="card-body table-responsive-md py-3">
+            <!--ajax 返回 -->
+        </div>
+    </div>
+</section>
+
+{/block}
+
+{block name="javascript"}
+<script src="__STATIC__/plugins/layDate-v5.0.9/laydate.js" type="text/javascript"></script><!-- laydate日期控件 -->
+{/block}
+
+
+{block name="script"}
+<script type="text/javascript">
+
+$(function (){
+    ajax_get_table('/admintp/Article/ajaxArticleList','search-form');// ajax加载文章列表
+});
+
+/*laydate日期控件*/
+laydate.render({
+  elem: '#start_time',
+  calendar: true,//节假日
+  max:0,//最大只能选择今天
+  btns: ['clear','now'],//右下角按钮
+  value:"{$start_time}"//默认值
+});
+laydate.render({
+  elem: '#end_time',
+  calendar: true,
+  max:0,
+  btns: ['clear','now'],
+  value:"{$end_time}"
+});
+
+
+/*DataTables表格配置和初始化*/
+function dataTable_ajax(){
+    var table =$('#table_id').DataTable({
+        order: [[0,'desc']],//默认排序
+        orderClasses: true,//排序的列高亮,class给sorting_1和sorting_2
+        renderer: "bootstrap",//指定渲染器,不设置一样
+        deferRender: true,//大量数据则延迟渲染
+        scrollX: false,// 水平滚动条
+        // scrollY: 250,// 垂直滚动条,固定高
+        scrollCollapse: false,//(当显示更少的记录时，表格减少高度)
+        lengthChange: true,//开启数量选择
+        lengthMenu: [5, 25, 100,1000],//数量选择的类型
+        pageLength: 5,//默认数量
+        autoWidth: true,//自动列宽
+        stripeClasses: ['strip1'],//斑马条效果的class
+        //国际化,这里直接链接文件
+        language: {
+            url: '__STATIC__/admin/js/dataTable_zh-cn.js'
+        },
+        //列的操作
+        columnDefs: [
+            {   "targets": [3],//指定列
+                "orderable": false,//禁用列排序
+            },{ "targets": [4,5,6,7,8,9],
+                "searchable": false, //禁用列搜索
+            },{ "targets": [1],
+                "render": function (data,type) {
+                    //判断正交数据的'显示数据'类型
+                    if (type === 'export') {
+                        var a = document.createElement("a");
+                        a.innerHTML = data;//把字符串data转换成dom节点
+                        return  a.childNodes[0].value;//return dom节点的value值
+                    }else{return data;}
+                }
+            },{ "targets": [2],
+                "render": function (data) {
+                  return data==''?'(无分类)':data;
+                }
+            },{ "targets": [3],
+                "createdCell": function (td,cellData) {
+                    $(td).css({'color':'red'});
+               },
+                "render": function (data,type,row) {
+                  return type === 'display' && data.length > 15 ?
+                          '<span title="'+data+'">'+data.substr(0,13)+'...</span>':data;//过长则省略号代替('display'是正交数据的'显示数据'类型)
+                }
+            },{
+                "targets":[0,1],
+                "responsivePriority":0//列的自适应隐藏等级
+            },{
+                "targets":[2,3],
+                "responsivePriority":1
+            },{
+                "targets":[8,9],
+                "responsivePriority":2,
+                "render": function (data,type) {
+                    //判断正交数据的'显示数据'类型
+                    if (type === 'export') {
+                        var a = document.createElement("a");
+                        a.innerHTML = data;//把字符串data转换成dom节点
+                        return a.childNodes[0].classList.contains('yes')?'是':'否';//js判断是否含有yes的class名
+                    }else{return data;}
+                }
+            },{
+                "targets":[4,5,6,7],
+                "responsivePriority":3
+            }
+
+        ],
+        /*
+        显示位置,这用了bootstrap4所对应的class,具体参考文档的dom模块
+        l:数量选择,f:搜索过滤,t:表格,r:(应该是表行),i:表信息,p:分页,B:导出按钮
+        */
+        dom: "<'w-100'<'float-left mr-1'l><'float-left'f><'float-right'B><'clearfix'>>"+"<'row'<'col-sm-12'tr>>"+"<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
+        // dom: "Blfrtip",
+        //导出表格操作
+        buttons:[
+            {   "extend": 'colvis',//筛选列
+                "text": '',// 按钮显示文字
+                "className": 'fas fa-filter btn-info',//设置class
+                "titleAttr": '筛选列',//设置title属性
+                "columns": [0,2,3,4,5,6,7,8,9],//允许筛选的列
+            },{
+                extend: 'collection',
+                text: '',
+                className: 'fas fa-file-export btn-secondary',
+                titleAttr:  '导出表格',
+                autoClose: true,//选择后,自动关闭
+                buttons: [
+                    {  "extend": 'excel',//导出excel的扩展
+                        "text": '',
+                        "className": 'far fa-file-excel fa-2x text-center',
+                        "titleAttr":  'Excel文件',
+                        "exportOptions":{
+                            columns: [0,1,2,3,4,5,6,7,8,9],//指定打印的列
+                            orthogonal: 'export'//为信息显示设置特定的正交数据请求类型(作用于render事件所返回的type值)
+                        },
+                    },{ "extend": 'csv',
+                        "text": '',
+                        "className": 'fas fa-file-csv fa-2x text-center',
+                        "titleAttr":  'CSV文件',
+                        "exportOptions":{
+                            columns: [0,1,2,3,4,5,6,7,8,9],
+                            orthogonal: 'export'//为信息显示设置特定的正交数据请求类型(作用于render事件所返回的type值)
+                        }
+                    },{ "extend": 'pdf',
+                        "text": '',
+                        "className": 'far fa-file-pdf fa-2x text-center',
+                        "titleAttr":  'PDF文件',
+                        "exportOptions":{
+                            columns: [0,1,2,3,4,5,6,7,8,9],
+                            orthogonal: 'export'//为信息显示设置特定的正交数据请求类型(作用于render事件所返回的type值)
+                        }
+                    },{ "extend": 'copy',
+                        "text": '',
+                        "className": 'far fa-copy fa-2x text-center',
+                        "titleAttr":  '复制到剪贴板',
+                        "exportOptions":{
+                            columns: [0,1,2,3,4,5,6,7,8,9],
+                            orthogonal: 'export'//为信息显示设置特定的正交数据请求类型(作用于render事件所返回的type值)
+                        }
+                    },{ "extend": 'print',
+                        "text": '',
+                        "className": 'fas fa-print fa-2x text-center',
+                        "titleAttr":  '打印',
+                        "exportOptions":{
+                            columns: [0,1,2,3,4,5,6,7,8,9],
+                            orthogonal: 'export'//为信息显示设置特定的正交数据请求类型(作用于render事件所返回的type值)
+                        }
+                    }
+                ]
+            }
+        ],
+        colReorder: true,//列排序
+        keys: true,//单元格焦点
+        responsive: true,//自适应
+        fixedHeader: true,//表头固定
+        //下拉框搜索
+        initComplete: function () {
+            var api = this.api(),
+                targets=[2];//使用 下拉框搜索 的列
+            api.columns().indexes().flatten().each(function(i){
+                //i为当前遍历列的索引值
+                if ($.inArray(i,targets) > -1) {
+                    var column = api.column(i),
+                        //默认的 option 提示选项
+                        all='<select class="custom-select custom-select-sm w-auto ml-1"><option value="">全部 '+$(column.header()).html()+'</option></select>',
+                        //id为table_id_length下插入下拉框,并设置事件过滤
+                        select = $(all).appendTo($("#table_id_length")).on( 'change', function () {
+                            var val = $.fn.dataTable.util.escapeRegex($(this).val());
+                            column.search( val ? '^'+val+'$' : '', true, false ).draw();
+                        } );
+                    //遍历当前列,去重,排序,并为下拉框添加选项
+                    column.data().unique().sort().each(function(d,j){
+                        select.append('<option value="'+d+'">'+d+'</option>');
+                    });
+                }
+            });
+        },
+
+    });
+
+
+}
+
+
+
+
+
+</script>
+
+{__block__}<!-- 继承原js -->
+
+{/block}
+

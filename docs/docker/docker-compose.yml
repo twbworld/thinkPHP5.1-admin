@@ -1,0 +1,101 @@
+version: "3.8"
+
+networks:
+    net1:
+        name: my_net #会自动创建网桥
+        driver: bridge #指定网络模式
+        ipam:
+            driver: default
+            config:
+                - subnet: 172.1.1.0/24 #指定ip段
+
+volumes:
+    my_volume: #创建一个卷
+        name: my_volume_name #在宿主机的目录名
+
+# 定义一个日志模板
+x-logging: &default-logging
+    driver: json-file
+    options:
+        max-size: "200k"
+        max-file: "10"
+
+services:
+    web:
+        image: nginx:1.19
+        container_name: nginx_container_name
+        hostname: nginx_hostname
+        ports:
+            - 80:80
+        working_dir: /usr/share/nginx #进入容器的默认目录
+        volumes:
+            - ${PWD}/nginx.conf:/etc/nginx/nginx.conf:ro #nginx根配置
+            - ${PWD}/default.conf:/etc/nginx/conf.d/default.conf:ro # nginx虚拟机1
+            - ${PWD}/proxy.conf:/etc/nginx/conf.d/proxy.conf:ro # nginx虚拟机2
+            - ${PWD}/../../:/usr/share/nginx/tp:rw #运行目录
+            - my_volume:/usr/share/nginx/logs:rw #运行目录
+        environment:
+            - TZ=Asia/Shanghai
+        restart: always
+        logging: *default-logging
+        depends_on: #启动顺序
+            - sql
+            - nosql
+            - language
+        networks:
+            net1:
+                ipv4_address: 172.1.1.2
+
+    language:
+        build:
+            context: ${PWD}
+            dockerfile: dockerfile_php #指定dockerfile文件
+        image: twbworld/php-phalcon-swoole-redis:latest
+        # image: bitnami/php-fpm
+        container_name: php_container_name
+        hostname: php_hostname
+        ports:
+            - 9501:9501
+        working_dir: /usr/share/nginx #进入容器的默认目录
+        volumes:
+            - ${PWD}/../../:/usr/share/nginx/tp:rw
+        environment:
+            - TZ=Asia/Shanghai
+        restart: always
+        logging: *default-logging
+        networks:
+            net1:
+                ipv4_address: 172.1.1.3
+
+    sql:
+        image: mysql:8.0
+        container_name: mysql_container_name
+        hostname: mysql_hostname
+        ports:
+            - 3306:3306
+        volumes:
+            - ${PWD}/../tp.sql:/docker-entrypoint-initdb.d/tp.sql:ro #把sql放在docker-entrypoint-initdb.d下,mysql会自动执行
+            - /usr/local/mysql8-docker/data/:/var/lib/mysql:rw #库数据
+        environment: #设置环境变量
+            - TZ=Asia/Shanghai
+            - MYSQL_ROOT_PASSWORD=tp
+            - MYSQL_USER=tp
+            - MYSQL_PASSWORD=tp
+            - MYSQL_DATABASE=tp
+        restart: always
+        logging: *default-logging
+        networks:
+            net1:
+                ipv4_address: 172.1.1.4
+
+    nosql:
+        image: redis:6.0
+        container_name: redis_container_name
+        hostname: redis_hostname
+        environment:
+            - TZ=Asia/Shanghai
+        restart: always
+        logging: *default-logging
+        networks:
+            net1:
+                ipv4_address: 172.1.1.5

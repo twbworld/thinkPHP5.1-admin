@@ -1,0 +1,14 @@
+User-agent: *
+
+Disallow: .png$
+Disallow: .jpg$
+Disallow: .jpeg$
+Disallow: .gif$
+
+Disallow: /admintp/
+Disallow: /admin/
+Disallow: /swagger_ui/
+Disallow: /static/admin/
+Disallow: /hook.php
+
+Allow: /static/

@@ -1,0 +1,35 @@
+<div class="box">
+
+    <ul class="event_year">
+        {foreach $data as $key=>$vo}
+        <li><label for="{$key}">{$key}</label></li>
+        {/foreach}
+    </ul>
+    <ul class="event_list">
+        {foreach $data as $key=>$vo}
+        <div>
+            <h3 id="{$key}">{$key}日</h3>
+            {foreach $vo as $k=>$v}
+            <li>
+                <span>{$v.log_time | date='H:i:s'}</span>
+                <p><span>{$v.log_info}&nbsp;&nbsp;&nbsp;&nbsp;{if $v.user_name}<a href="###" onclick="ajax_get_log('{$v.admin_id}','1')">{$v.user_name}</a>{if $v.delete_time!=0}(用户已不存在){/if}&nbsp;&nbsp;&nbsp;&nbsp;{/if}{$v.log_ip}&nbsp;&nbsp;&nbsp;&nbsp;{$v.log_url}</span></p>
+            </li>
+            {/foreach}
+        </div>
+        {/foreach}
+    </ul>
+
+    {if $info}
+    <div class="card">
+        <div class="card-header text-center">
+            管理员信息
+        </div>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item text-center">用户名 : {$info.user_name}{if $info.delete_time !=0} (该用户已删除){/if}</li>
+            <li class="list-group-item text-center">角色 : {$info.role_name}</li>
+            <li class="list-group-item text-center">加入时间 : {$info.create_time | date='Y-m-d'}</li>
+        </ul>
+    </div>
+    {/if}
+
+</div>

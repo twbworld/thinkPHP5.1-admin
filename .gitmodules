@@ -1,0 +1,3 @@
+[submodule "thinkphp"]
+	path = thinkphp
+	url = https://github.com/top-think/framework

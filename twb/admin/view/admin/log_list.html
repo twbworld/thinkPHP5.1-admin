@@ -1,0 +1,104 @@
+{extend name="../twb/admin/view/public/list.html" /}<!-- 模板继承 -->
+
+{block name="title"}日志记录{/block}
+
+{block name="dataTables_css"}{/block}
+{block name="dataTables_expand_css"}{/block}
+
+{block name="css"}
+<link href="__STATIC__/admin/css/TimeLine.css" rel="stylesheet" type="text/css">
+{/block}
+
+{block name="style"}
+<style type="text/css">
+.card {
+    font: normal 14px/24px "Helvetica Neue", Helvetica, STheiti, "Microsoft Yahei", "冬青黑体简体中文 w3", 宋体, Arial, Tahoma, sans-serif, serif;
+    word-wrap: break-word;
+    background: #F0F0F0 !important;
+}
+label{
+    cursor: pointer;
+}
+.box{
+    position: relative;
+}
+.box .card{
+    position: absolute;
+    right: 0;
+    margin-right: -15px;
+    margin-top: -20px
+}
+</style>
+{__block__}<!-- 继承原js -->
+{/block}
+
+{block name="body"}
+<section class="p-3 m-auto">
+    <div class="card">
+        <div class="card-header border-primary bg-transparent py-2">
+            <h5 class="text-center float-left m-0" style="line-height: 38px"><i class="fas fa-bars"></i>&nbsp;日志记录</h5>
+            <div class="btn-group float-right" role="group" aria-label="Basic example">
+                <button title="获取今天日志" onclick="ajax_get_log('d')" class="btn btn-primary" type="button">今天</button>
+                <button title="获取本周日志" onclick="ajax_get_log('w')" class="btn btn-primary" type="button">本周</button>
+                <button title="获取本月日志" onclick="ajax_get_log('m')" class="btn btn-primary" type="button">本月</button>
+                <button title="获取上月日志" onclick="ajax_get_log('last month')" class="btn btn-primary" type="button">上月</button>
+                <button title="获取今年日志" onclick="ajax_get_log('y')" class="btn btn-primary" type="button">今年</button>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <div id="flexigrid" class="card-body table-responsive-md py-3">
+            <!--ajax 返回 -->
+        </div>
+    </div>
+</section>
+{/block}
+
+{block name="dataTables_js"}{/block}
+{block name="dataTables_expand_js"}{/block}
+{block name="list_js"}{/block}
+
+{block name="script"}
+<script type="text/javascript">
+
+ajax_get_log('m'); // ajax加载文章列表
+
+/*ajax时间轴*/
+function ajax_get_log(id,tag) {
+    if (tag) {
+        var url='/admintp/admin/ajaxOneLogList';//获取个人日志
+    }else{
+        var url='/admintp/admin/ajaxLogList';
+    }
+    layer.load(0); //"加载中"图标
+    $.ajax({
+        type: "POST",
+        url: url,
+        data: { 'id': id }, //form序列化
+        success: function(data) {
+            if (data.code=='0') {
+                layer.close(layer.index); //关闭最近弹出的图标
+                layer.msg(data.msg, { icon: 5, time: data.wait * 1000, anim: 2, skin: 'layui-layer-molv' });
+            }else{
+                $("#flexigrid").html('').append(data);
+                telescopic();
+                layer.close(layer.index); //关闭最近弹出的图标
+            }
+        }
+    });
+}
+
+
+/*点击左侧时间轴,右侧伸缩*/
+function telescopic() {
+    $('label').click(function() {
+        $('.event_year>li').removeClass('current');
+        $(this).parent('li').addClass('current');
+        var year = $(this).attr('for');
+        $('#' + year).parent().prevAll('div').slideUp(800);
+        $('#' + year).parent().slideDown(800).nextAll('div').slideDown(800);
+    });
+    $(".event_year li:first").addClass("current");
+}
+
+</script>
+{/block}

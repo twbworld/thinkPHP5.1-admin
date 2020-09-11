@@ -1,0 +1,51 @@
+<table id="table_id" class="table table-bordered table-striped table-hover table-sm" style="width: 100%">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>标题</th>
+            <th>分类</th>
+            <th>图标</th>
+            <th>跳转模式</th>
+            <th>链接</th>
+            <th>开启</th>
+            <th>置顶</th>
+        </tr>
+    </thead>
+    <tbody>
+      {volist name="data" id="vo"}
+        <tr data-id="{$vo.id}">
+            <td>{$vo.id}</td>
+            <td data-order="{$vo.text}" data-search="{$vo.text}"><input type="text" value="{$vo.text}" class="form-control form-control-sm d-inline-block" style="width:100px" onblur="changeTableVal2('menu','id','{$vo.id}','text',this)"></td>
+            <td>{$vo.cat_id}</td>
+            <td>{$vo.icon}</td><!-- 这由插件组成i标签 -->
+            <td>{$vo.target}</td>
+            <td>{$vo.url}</td>
+
+            {if $vo.enabled==1}
+            <td data-order='1'>
+            <i class="fa-lg far fa-check-circle yes" onClick="changeTableVal('menu','id','{$vo.id}','enabled',this)"></i>
+            </td>
+            {else /}
+            <td data-order='0'>
+            <i class="fa-lg far fa-times-circle no" onClick="changeTableVal('menu','id','{$vo.id}','enabled',this)"></i>
+            </td>
+            {/if}
+
+            {if $vo.cat_id == '一级'}
+            <td data-order='3'>
+            <i title="该分类禁止开关" class="fas fa-ban fa-lg"></i>
+            </td>
+            {elseif $vo.top==1}
+            <td data-order='1'>
+            <i class="fa-lg far fa-check-circle yes" onClick="changeTableVal('menu','id','{$vo.id}','top',this)"></i>
+            </td>
+            {else /}
+            <td data-order='2'>
+            <i class="fa-lg far fa-times-circle no" onClick="changeTableVal('menu','id','{$vo.id}','top',this)"></i>
+            </td>
+            {/if}
+        </tr>
+        {/volist}
+    </tbody>
+
+</table>

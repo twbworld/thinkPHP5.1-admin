@@ -1,0 +1,20 @@
+<table id="table_id" class="table table-bordered table-striped table-hover table-sm" style="width: 100%">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>名称</th>
+            <th>分组</th>
+            <th>权限码</th>
+        </tr>
+    </thead>
+    <tbody>
+        {volist name="data" id="vo"}
+        <tr data-id="{$vo.id}">
+            <td>{$vo.id}</td>
+            <td data-order="{$vo.name}" data-search="{$vo.name}"><input type="text" value="{$vo.name}" class="form-control form-control-sm d-inline-block" style="width:150px" onblur="changeTableVal2('system_menu','id','{$vo.id}','name',this)"></td>
+            <td>{$group[$vo[group]]}</td>
+            <td>{$vo.right}</td>
+        </tr>
+        {/volist}
+    </tbody>
+</table>

@@ -1,0 +1,135 @@
+{extend name="../twb/admin/view/public/form.html" /}
+
+{block name="title"}添加/修改{/block}
+
+{block name="body"}
+    <div class="col-md-12 mt-4">
+        <form class="form-horizontal" id="form">
+
+
+            <div class="input-group mb-3 col-sm-5 mx-auto">
+              <div class="input-group-prepend">
+                <span class="input-group-text"><i class="fas fa-heading mr-1"></i>名称</span>
+              </div>
+              <input type="text" name="role_name" class="form-control" placeholder="角色名称是唯一的" value="{$data.role_name}">
+            </div>
+
+            <div class="input-group mb-3 col-sm-5 mx-auto">
+              <div class="input-group-prepend">
+                <span class="input-group-text"><i class="fas fa-audio-description mr-1"></i>描述</span>
+              </div>
+              <textarea class="form-control" placeholder="角色相关描述" name="role_desc">{$data.role_desc}</textarea>
+            </div>
+
+            <div class="card mx-auto mb-3">
+              <div class="card-header text-center">
+                <i class="fas fa-plug"></i><span class="mx-2">权限资源分配</span>
+                <div class="custom-control custom-checkbox d-inline-block">
+                    <input id="customCheck" class="custom-control-input" type="checkbox">
+                    <label class="custom-control-label" for="customCheck">(全选)</label>
+                </div>
+              </div>
+              <div class="card-body">
+                {foreach $modules as $kk=>$menu}
+                <div class="row mb-4">
+                    <div class="custom-control custom-checkbox col-md-2"><input type="checkbox" class="custom-control-input" id="{$kk}" value="1"  cka="mod-{$kk}"><label class="custom-control-label" for="{$kk}">{$group[$kk]}</label></div>
+                    <ul class="col-md-10 d-inline-block list-group ul-no-style pl-4">
+                        {volist name="menu" id="vv"}
+                        <li class="d-inline-block mr-1"><div class="custom-control custom-checkbox d-inline-block"><input type="checkbox" class="custom-control-input" id="{$kk}-{$vv.id}" value="{$vv.id}" ck="mod-{$kk}" name="right[]" {if $vv.enable == 1}checked{/if}><label class="custom-control-label" for="{$kk}-{$vv.id}">{$vv.name}</label></div></li>
+                        {/volist}
+                    </ul>
+                </div>
+                {/foreach}
+
+              </div>
+            </div>
+
+
+            <div class="col-sm-5 mb-3 mx-auto">
+                <input type="hidden" name="id" value="{$data.role_id}">
+                <input type="hidden" name="act" value="{$act}">
+                <button type="submit" class="btn btn-primary btn-block">确定</button>
+                <input type="hidden" name="__token__" value="{$Request.token}" />
+            </div>
+
+
+        </form>
+    </div>
+{/block}
+
+
+{block name="script"}
+<script type="text/javascript">
+
+$(function() {
+
+    /*表单验证*/
+    $("#form").validate({
+        rules: {
+            role_name: {
+                required: true,
+                minlength: 2
+            },
+            id: "required",
+            act: "required",
+            __token__: "required",
+        },
+        errorClass: "validate_error",
+        errorElement: "em",
+        //设置报错位置
+        errorPlacement: function(error, element) {
+            error.insertAfter(element);
+            // error.insertAfter(element.parents('.col-sm-5'));
+        },
+
+        submitHandler: function(form) {
+            var index = layer.load(0, { shade: false }); //"加载中"弹窗
+            $(form).ajaxSubmit({
+                dataType: 'json',
+                type: 'post',
+                url: "/admintp/admin/roleHandle",
+                success: function(data) {
+                    layer.close(index); //关闭弹窗
+                    if (data.code == 1) {
+                        //success弹窗
+                        layer.msg(data.msg, { icon: 6, time: data.wait * 1000, anim: 1, skin: 'layui-layer-molv' }, function() {
+                            if (data.url) {
+                                parent.location.href = data.url;
+                            }
+                        });
+                    } else {
+                        layer.msg(data.msg, { icon: 5, time: data.wait * 1000, anim: 2, skin: 'layui-layer-molv' });
+                    }
+
+                },
+                error: function(XmlHttpRequest, textStatus, errorThrown) {
+                    layer.close(index);
+                    layer.msg('网络错误', { icon: 5, time: 1500, anim: 6, skin: 'layui-layer-molv' });
+                }
+            });
+            // $(form).resetForm(); // 提交后重置表单
+            return false; // 阻止表单自动提交
+        }
+    });
+
+
+    /*全选*/
+    $("#customCheck").click(function(){
+        $('input[type=checkbox]').prop('checked',$(this).is(':checked'));
+    });
+
+    /*部分全选*/
+    $(":checkbox[cka]").click(function(){
+        var $cks = $(":checkbox[ck='"+$(this).attr("cka")+"']"),
+            checked = $(this).is(':checked');
+        $cks.each(function(){$(this).prop("checked",checked);});
+    });
+
+
+});
+
+
+</script>
+{__block__}<!-- 继承原js -->
+
+{/block}

@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <!-- 告诉浏览器响应屏幕宽度 -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <title>此地无银三百两</title>
+    <link rel="shortcut icon" href="/favicon.ico" />
+
+    <!-- bootstrap -->
+    <!-- <link href="__STATIC__/plugins/bootstrap-3.3.7/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css"> -->
+    <link href="__STATIC__/plugins/bootstrap-4.2.1/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <!-- Font Awesome (图标字体库和CSS框架)-->
+    <link href="__STATIC__/plugins/fontawesome-5.6.3/css/all.min.css" rel="stylesheet" type="text/css">
+    <!-- Theme style (AdminLTE样式)-->
+    <link href="__STATIC__/admin/css/AdminLTE-Iframe.min.css" rel="stylesheet" type="text/css">
+    <!-- AdminLTE皮肤,从css/skins中选择,并改相应的class-->
+    <link href="__STATIC__/admin/css/skins/all-skins.min.css" rel="stylesheet" type="text/css">
+    <!-- <link rel="stylesheet" href="__STATIC__/admin/css/skins/skin-green.min.css"> -->
+
+
+</head>
+<body class="hold-transition skin-blue sidebar-mini fixed">
+    <div class="wrapper">
+        <header class="main-header">
+            <a href="###" class="logo">
+            <span class="logo-mini"><img src="__STATIC__/common/images/logo.png" class="w-75 h-75"></span>
+            <span class="logo-lg"><i class="fas fa-home fa-lg mr-2"></i>后台管理系统</span>
+            </a>
+
+        <nav class="navbar navbar-expand-lg navbar-static-top d-block p-0">
+            <a class="nav-link py-2 iexchange d-inline-block text-light sidebar-toggle" data-toggle="offcanvas" role="button"><i class="fas fa-exchange-alt"></i></a>
+          <div class="navbar-custom-menu">
+            <ul class="nav navbar-nav d-block">
+              <li class="nav-item dropdown messages-menu d-inline-block position-relative">
+                <a class="nav-link dropdown-toggle py-2" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="far fa-envelope"></i>
+                    <span class="label label-info">4</span>
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                    <li class="header">你有1条消息</li>
+                    <li>
+                        <ul class="menu">
+                            <li>
+                                <a href="#">
+                                <div class="pull-left">
+                                    <img src="__STATIC__/common/images/logo.png" class="img-circle"
+                                         alt="User Image">
+                                </div>
+                                <h4>
+                                    张三
+                                    <small><i class="fas fa-clock-o"></i>5分钟前</small>
+                                </h4>
+                                <p>xxx</p>
+                            </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="footer"><a href="#">参看所有</a></li>
+                </ul>
+              </li>
+
+              <li class="nav-item dropdown messages-menu d-inline-block position-relative">
+                <a class="nav-link dropdown-toggle py-2" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="far fa-bell"></i>
+                    <span class="label label-warning">10</span>
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                    <li class="header">你有1个提醒</li>
+                    <li>
+                        <ul class="menu">
+                            <li>
+                                <a href="#">
+                                <i class="fas fa-users text-aqua"></i>xxx
+                            </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="footer"><a href="#">View all</a></li>
+                </ul>
+              </li>
+
+              <li class="nav-item dropdown messages-menu user user-menu d-inline-block">
+                <a class="nav-link py-2" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <img src="__STATIC__/common/images/logo.png" class="user-image" alt="User Image">
+                    <span class="hidden-xs">{$admin['user_name']}</span>
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                    <li class="user-header">
+                        <img src="__STATIC__/common/images/logo.png" class="img-circle" alt="User Image">
+                        <p>{$admin['user_name']}<small>{$admin['role_name']}</small></p>
+                    </li>
+                    <li class="user-body">
+                        <div class="row">
+                            <div class="col-4 text-center">
+                                <a href="#">设置</a>
+                            </div>
+                            <div class="col-4 text-center">
+                                <a href="#">资料</a>
+                            </div>
+                            <div class="col-4 text-center">
+                                <a href="#">更多</a>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="user-footer">
+                        <!--                                     <div class="pull-left">
+                            <a href="#" class="btn btn-default btn-flat">Profile</a>
+                        </div> -->
+                        <div class="pull-right">
+                            <a href="{:url('admintp/admin/logout')}" class="btn btn-default btn-flat">退登</a>
+                        </div>
+                    </li>
+                </ul>
+              </li>
+
+              <li class="d-inline-block">
+                  <a href="#" data-toggle="control-sidebar" class="nav-link py-2 px-3"><i class="fas fa-cog"></i></a>
+              </li>
+
+            </ul>
+          </div>
+        </nav>
+
+
+
+        </header>
+        <aside class="main-sidebar">
+            <section class="sidebar">
+                <form action="#" method="get" class="sidebar-form">
+                    <div class="input-group">
+                      <input type="text" name="q" class="form-control border-0" placeholder="搜索...">
+                      <div class="input-group-append input-group-btn">
+                        <button id="search-btn" class="btn btn-flat border-0" type="button" name="search" onclick="search_menu()"><i class="fas fa-search"></i></button>
+                      </div>
+                    </div>
+                </form>
+                <ul class="sidebar-menu">
+                    <li class="header"><i class="fas fa-level-up-alt"></i>&nbsp;&nbsp;置顶</li>
+
+                    {volist name="menu[0]" id="vo"}
+                    <li>
+                        <a style="cursor: pointer;" data-pageid="{$vo.id}" class="top_active"
+                        {switch $vo.target}
+                            {case 0}onclick="addTabs({id:'{$vo.id}',title: '{$vo.text}',url: '{$vo.url}',urlType: 'absolute',close: true});"{/case}
+                            {case 1}href="{$vo.url}"{/case}
+                            {case 2}href="{$vo.url}" target="_blank" {/case}
+                        {/switch}>
+                            <i class="{$vo.icon}"></i> <span>{$vo.text}</span>
+                            <!-- <span class="pull-right-container">
+                                <small class="label pull-right bg-green">new</small>
+                            </span> -->
+                        </a>
+                    </li>
+                    {/volist}
+
+                    <li class="header"><i class="fas fa-shopping-bag"></i>&nbsp;&nbsp;菜单</li>
+
+                    {volist name="menu" id="vo" offset="1"}
+                    <li class="treeview" data-level="0">
+                        <a class="nav-link">
+                            <i class="{$vo.icon}"></i>
+                            <span class="title menu-text">{$vo.text}</span>
+                            <span class="pull-right-container">
+                                <i class="fas fa-angle-left pull-right"></i>
+                            </span>
+                        </a>
+                        <ul class="treeview-menu">
+
+                            {volist name="$vo['child']" id="v"}
+                            <li class="treeview" data-level="1">
+                                <a class="nav-link"  data-pageid="{$v.id}"
+                                {switch $v.target}
+                                    {case 0}onclick="addTabs({id:'{$v.id}',title: '{$v.text}',url: '{$v.url}',urlType: 'absolute',close: true});"{/case}
+                                    {case 1}href="{$v.url}"{/case}
+                                    {case 2}href="{$v.url}" target="_blank" {/case}
+                                {/switch}>
+                                    <i class="{$v.icon}"></i>
+                                    <span class="title menu-text">{$v.text}</span>
+                                </a>
+                            </li>
+                            {/volist}
+
+                        </ul>
+                    </li>
+                    {/volist}
+
+                </ul>
+            </section>
+        </aside>
+        <div class="content-wrapper" id="content-wrapper">
+            <!--bootstrap tab风格 多标签页-->
+            <div class="content-tabs">
+                <button class="roll-nav roll-left tabLeft" onclick="scrollTabLeft()">
+                    <i class="fas fa-backward"></i>
+                </button>
+                <nav class="page-tabs menuTabs tab-ui-menu" id="tab-menu">
+                    <div class="page-tabs-content" style="margin-left: 0px;">
+                    </div>
+                </nav>
+                <button class="roll-nav roll-right tabRight" onclick="scrollTabRight()">
+                    <i class="fas fa-forward" style="margin-left: 3px;"></i>
+                </button>
+                <div class="btn-group roll-nav roll-right dropdown">
+                    <button style="line-height: 0px" class="dropdown tabClose" data-toggle="dropdown">
+                        <i class="fas fa-caret-down fa-2x"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-right" style="min-width: 100px;">
+                        <li><a class="tabReload dropdown-item" href="javascript:refreshTab();">刷新当前</a></li>
+                        <li><a class="tabCloseCurrent dropdown-item" href="javascript:closeCurrentTab();">关闭当前</a></li>
+                        <li><a class="tabCloseOther dropdown-item" href="javascript:closeOtherTabs();">关闭其他</a></li>
+                        <li><a class="tabCloseAll dropdown-item" href="javascript:closeOtherTabs(true);">全部关闭</a></li>
+                    </ul>
+                </div>
+                <button class="roll-nav roll-right fullscreen" onclick="App.handleFullScreen()"><i class="fas fa-expand-arrows-alt"></i></button>
+            </div>
+            <div class="content-iframe bg-white">
+                <div class="tab-content " id="tab-content">
+                </div>
+            </div>
+        </div>
+
+        <aside class="control-sidebar control-sidebar-dark">
+            <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
+                <li><a href="#control-sidebar-home-tab" data-toggle="tab"><i class="fas fa-home"></i></a></li>
+            </ul>
+
+            <div class="tab-content">
+                <div class="tab-pane fade" id="control-sidebar-home-tab">
+                    <h3 class="control-sidebar-heading">管理</h3>
+                    <ul class="control-sidebar-menu">
+                        <li>
+                            <a href="javascript:void(0)">
+                            <i class="menu-icon fas fa-birthday-cake bg-red"></i>
+
+                            <div class="menu-info">
+                                <h4 class="control-sidebar-subheading">闹钟1</h4>
+                                <p>xxx</p>
+                            </div>
+                        </a>
+                        </li>
+                    </ul>
+                    <h3 class="control-sidebar-heading">统计</h3>
+                    <ul class="control-sidebar-menu">
+                        <li>
+                            <a href="javascript:void(0)">
+                            <h4 class="control-sidebar-subheading">
+                                成功率
+                                <span class="label label-danger pull-right">70%</span>
+                            </h4>
+
+                            <div class="progress progress-xxs">
+                                <div class="progress-bar progress-bar-danger" style="width: 70%"></div>
+                            </div>
+                        </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </aside>
+        <div class="control-sidebar-bg"></div>
+    </div>
+    <!-- jQuery -->
+    <!-- <script src="__STATIC__/common/js/jquery-2.2.3.min.js" type="text/javascript"></script> -->
+    <script src="__STATIC__/common/js/jquery-3.3.1.min.js" type="text/javascript"></script>
+    <!-- bootstrap (bootstrap.bundle包含Popper扩展) -->
+    <script src="__STATIC__/plugins/bootstrap-4.2.1/js/bootstrap.bundle.min.js" type="text/javascript"></script>
+    <!-- <script src="__STATIC__/plugins/bootstrap-3.3.7/dist/js/bootstrap.min.js" type="text/javascript"></script> -->
+    <!-- Slimscroll (滚动条插件)-->
+    <script src="__STATIC__/plugins/jQuery-slimScroll-1.3.8/jquery.slimscroll.min.js" type="text/javascript"></script>
+    <!-- FastClick (绕过移动端300毫秒的点击延迟)-->
+    <script src="__STATIC__/plugins/fastclick-1.0.6/lib/fastclick.js" type="text/javascript"></script>
+    <!-- AdminLTE App -->
+    <script src="__STATIC__/admin/js/app.min.js" type="text/javascript"></script>
+    <!-- AdminLTE for demo purposes -->
+    <script src="__STATIC__/admin/js/demo_iframe.js" type="text/javascript"></script>
+    <!--tabs-->
+    <script src="__STATIC__/admin/js/app_iframe.js" type="text/javascript"></script>
+    <!-- 弹窗插件 -->
+    <script src="__STATIC__/plugins/layer-v3.1.1/layer.js" type="text/javascript"></script>
+
+
+
+    <script type="text/javascript">
+
+    /**
+     * 本地搜索菜单
+     */
+    // function search_menu() {
+    //     //要搜索的值
+    //     var text = $('input[name=q]').val();
+
+    //     var $ul = $('.sidebar-menu');
+    //     $ul.find("a.nav-link").each(function() {
+    //         var $a = $(this).css("border", "");
+
+    //         //判断是否含有要搜索的字符串
+    //         if ($a.children("span.menu-text").text().indexOf(text) >= 0) {
+
+    //             //如果a标签的父级是隐藏的就展开
+    //             $ul = $a.parents("ul");
+
+    //             if ($ul.is(":hidden")) {
+    //                 $a.parents("ul").prev().click();
+    //             }
+    //             closeTab();
+
+    //             //点击该菜单
+    //             $a.click().css("border", "1px solid");
+    //         }
+    //     });
+    // }
+
+    $(function() {
+
+        // App.setbasePath("__LTE__/");
+        // App.setGlobalImgPath("__LTE__/dist/img/");
+
+        //默认欢迎页面
+        addTabs({
+            id: '0', //代表这个tab的id，重复id将认为同一个tab，获取用getActivePageId(element)或top.getActivePageId()
+            title: 'Hello World !', //选项卡的标题,根据pageId用findTabTitle(pageId)获得
+            close: false, //false表示不可以关闭,
+            url: "{:url('admintp/index/welcome')}", //指定一个url地址，绝对或者相对地址
+            urlType: "absolute" //可选relative和absolute ,默认是relative, 相对于当前页面（管理所有tab的页面） 比如http://localhost/index.html,想打开index.html同级目录UI下的页面，就给url:UI/welcome.html;urlType:relative
+        });
+
+        App.fixIframeCotent();//app_iframe.js修正高度
+
+
+        // 动态创建菜单后，可以重新计算 SlimScroll
+        // $.AdminLTE.layout.fixSidebar();
+        /*if ($.AdminLTE.options.sidebarSlimScroll) {
+            if (typeof $.fn.slimScroll != 'undefined') {
+                //Destroy if it exists
+                var $sidebar = $(".sidebar");
+                $sidebar.slimScroll({destroy: true}).height("auto");
+                //Add slimscroll
+                $sidebar.slimscroll({
+                    height: ($(window).height() - $(".main-header").height()) + "px",
+                    color: "rgba(0,0,0,0.2)",
+                    size: "3px"
+                });
+            }
+        }*/
+
+    });
+
+
+    </script>
+
+
+
+</body>
+
+</html>
