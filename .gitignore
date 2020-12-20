@@ -1,4 +1,5 @@
 !.gitignore
+!.gitkeep
 !.htaccess
 
 #https_key
