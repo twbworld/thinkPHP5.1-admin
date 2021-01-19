@@ -2,20 +2,37 @@
 !.gitkeep
 !.htaccess
 
-#https_key
-/public/.user.ini
-/public/.well-known/
+# Ide
+.idea/
+.project/
+.vscode/*
+.vs/*
+！
+
+# php
+vendor/
+_vendor/
+composer.lock
+composer.phar
+
+#js
+node_modules/
+yarn.lock
+package-lock.json
+
+#cache
+runtime/
+cache/
+temp/
+
+#https
+.user.ini
+.well-known/*
+
+#system
+*.log
+.env
 
 
-/vendor
-/runtime
-/public/cache
-/public/images
-/.project
-/.idea
-/.vs
-/.vscode
-/！
-/composer.lock
-/composer.phar
-/Thumbs.db
+
+/public/images/*
