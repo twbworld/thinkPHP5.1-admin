@@ -7,6 +7,8 @@ ThinkPHP5.1-Admin —— *基于ThinkPHP5.1的后台管理系统*
 ![](https://img.shields.io/badge/language-PHP/JS-orange)
 [![](https://img.shields.io/badge/fork-ThinkPhp5.1_think-green?logo=github)](https://github.com/top-think/think)
 [![](https://img.shields.io/badge/fork-ThinkPhp5.1_framework-green?logo=github)](https://github.com/top-think/framework)
+[![](https://img.shields.io/github/license/twbworld/thinkPHP5.1-admin)](https://github.com/twbworld/thinkPHP5.1-admin/blob/master/LICENSE)
+[![](https://app.codacy.com/project/badge/Grade/2000dd3cf50c434bb5b4588de4b8a183)](https://www.codacy.com/gh/twbworld/thinkPHP5.1-admin/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=twbworld/thinkPHP5.1-admin&amp;utm_campaign=Badge_Grade)
 
 ## 使用
 
