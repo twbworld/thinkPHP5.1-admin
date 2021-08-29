@@ -36,7 +36,7 @@ class Base extends Controller
      */
     public function __construct()
     {
-        session_start(); //session初始化
+        // session_start(); //session初始化
         header("Cache-control: private"); // history.back返回后输入框值丢失问题 参考文章 http://www.tp-shop.cn/article_id_1465.html  http://blog.csdn.net/qinchaoguang123456/article/details/29852881
         parent::__construct();
         // $upgradeLogic = new UpgradeLogic();

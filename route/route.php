@@ -2,13 +2,13 @@
 //禁止后台登录页面
 Route::rule('admintp/admin/login', 'home/index/miss')->method('get');
 //后台登录页面
-Route::rule('admintp/:id$', 'admin/admin/login')->ext('login')->pattern(['id' => '[0-9]+'])->method('get')->https(false);
+Route::rule('admintp/:id$', 'admin/admin/login')->ext('login')->pattern(['id' => '[0-9]+'])->method('get');
 //后台ajax
-Route::rule('admintp/:c/:a', 'admin/:c/:a')->ajax()->method('post')->https(false);
+Route::rule('admintp/:c/:a', 'admin/:c/:a')->ajax()->method('post');
 //后台页面
-Route::rule('admintp/:c/:a', 'admin/:c/:a')->ext('html')->ajax(false)->method('get')->https(false);
+Route::rule('admintp/:c/:a', 'admin/:c/:a')->ext('html')->ajax(false)->method('get');
 //后台图片上传处理
-Route::rule('Upload/:a', 'admin/Upload/:a')->method('post')->https(false);
+Route::rule('Upload/:a', 'admin/Upload/:a')->method('post');
 
 //菜单栏页编辑
 Route::rule('admintp/menu/menu/:id', 'admin/menu/menu')->method('get')->pattern(['id' => '[0-9]+']);
@@ -26,10 +26,10 @@ Route::rule('admintp/admin/admininfo/:id', 'admin/admin/adminInfo')->method('get
 
 
 //前台首页
-Route::rule('/', 'home/index/index')->method('get')->ext('html')->https(false);
+Route::rule('/', 'home/index/index')->method('get')->ext('html');
 //前台页面
-Route::rule(':c/:a', 'home/:c/:a')->ext('html')->https(false);
-Route::rule('home/:c/:a', 'home/:c/:a')->method('get')->ext('html')->https(false);
+Route::rule(':c/:a', 'home/:c/:a')->ext('html');
+Route::rule('home/:c/:a', 'home/:c/:a')->method('get')->ext('html');
 
 Route::miss('home/index/miss'); //跳转错误页面(相当于开启了强制路由模式)
 // Route::resource('admintp', 'admintp/index'); //资源路由

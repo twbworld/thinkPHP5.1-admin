@@ -4,12 +4,195 @@ namespace app\home\controller;
 use think\Controller;
 use think\facade\Request;
 use think\facade\Cookie;
+use Elasticsearch\ClientBuilder;
+use QL\QueryList;
 
 class Index extends Controller
 {
+    private static $es;
+
+    public function __construct()
+    {
+        self::$es = ClientBuilder::create()->setHosts([
+            'es:9200'
+        ])->build();
+    }
     public function miss()
     {
         $this->error("页面出错!抱歉", '/', '', 2);
+    }
+
+    public function es()
+    {
+
+
+        /*PUT /jd
+        {
+          "mappings": {
+            "properties": {
+              "img": {
+                "type": "text"
+              },
+              "name": {
+                "type": "text"
+              },
+              "price": {
+                "type": "double"
+              },
+              "date": {
+                "type": "date",
+                "format":"yyyy-MM-dd HH:mm:ss"
+              }
+            }
+          }
+        }*/
+
+
+        // $params = [
+        //     'index' => 'test2', //索引名称
+        //     'body' => [
+        //         'settings'=> [ //配置
+        //             'number_of_shards'=> 3,//主分片数
+        //             'number_of_replicas'=> 1 //主分片的副本数
+        //         ],
+        //         'mappings'=> [  //映射
+
+        //                 '_source'=>[   //  存储原始文档
+        //                     'enabled' => 'true'
+        //                 ],
+        //                 'properties'=> [ //配置数据结构与类型
+        //                     'name'=> [ //字段1
+        //                         'type'=>'text',//类型 text、integer、float、double、boolean、date
+        //                         'index'=> 'true',//是否索引
+        //                     ],
+        //                     'age'=> [ //字段2
+        //                         'type'=>'integer',
+        //                     ],
+        //                     'sex'=> [ //字段3
+        //                         'type'=>'keyword',
+        //                         'index'=> 'false',
+        //                     ],
+        //                 ]
+
+        //         ],
+        //     ]
+        // ];
+        // self::$es->indices()->create($params)
+
+
+        // $params = [
+        //         'index' => 'test',
+        //         'id'    => '3a',
+        //         'body'  => ['name' => 'abc2','age'=>42,'sex'=>'男2']
+        //     ];
+
+        // $response = self::$es->index($params);
+
+
+
+        // $params = [
+        //     'index' => 'sy3',
+
+        // ];
+        // $params['body'] = [
+        //     'query' => [
+        //         'match' => [
+        //             'name' => 'php'
+        //         ]
+        //     ]
+        // ];
+
+        // $response = self::$es->search($params);
+
+
+        // $params = [
+        //     'index' => 'sy3',
+
+        // ];
+        // $params['body'] = array(
+        //     'query' => array(
+        //         'match' => array(
+        //             'name' => 'php'
+        //         )
+        //     ),
+        //     'sort' => array(
+        //         array('day' => array('order' => 'desc'))
+        //        // array('popularity' => array('order' => 'desc'))
+        //     )
+        // );
+        // $response = self::$es->search($params);
+
+
+        // $params = [
+        //     'index' => 'sy3',
+
+        // ];
+        // $json='{
+        //   "query": {
+        //     "bool": {
+        //       "must": { "match": {"name": "php"} }
+        //     }
+        //   }
+        // }';
+        // $params['body'] = $json;
+
+        // $response = self::$es->search($params);
+
+
+
+
+
+
+
+        // $kw = '蚊帐';
+        // $ql = QueryList::get('https://search.jd.com/Search?keyword=' . $kw)->find('#J_goodsList > ul');
+
+        // $params = [];
+        // $ql->find('.gl-item')->map(function($li) use(&$params){
+
+        //     $params['body'][] = [
+        //         'index' => [
+        //             '_index' => 'jd'
+        //         ]
+        //     ];
+
+        //     $params['body'][] = [
+        //         'img' => $li->find('.gl-i-wrap > .p-img > a > img')->attrs('data-lazy-img'),
+        //         'name' => $li->find('.gl-i-wrap > .p-name > a > em')->text(),
+        //         'price' => $li->find('.gl-i-wrap > .p-price > strong > i')->text()
+        //     ];
+        // });
+        // $responses = self::$es->bulk($params);
+
+
+
+
+        $params = [
+            'index' => 'jd',
+            "from" => 2, //分页第几个开始
+            "size" => 50,
+            'body' => [
+                'query' => [
+                    'bool' => [
+                        'must' => [
+                            [
+                                'match' => [
+                                    'name' => '学生蚊帐'
+                                ]
+                            ]
+                        ]
+                    ]
+
+                ],
+                "_source" => ["name"]
+            ]
+        ];
+
+        $response = self::$es->search($params);
+
+
+            echo json_encode($response, JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT);exit();
+
     }
 
     /**
