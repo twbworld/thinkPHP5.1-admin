@@ -1,0 +1,34 @@
+name: review
+on:
+  workflow_dispatch: #github页面手动触发
+  push: #push即触发
+    branches:
+      - master
+    paths-ignore:
+      - '.*'
+      - 'LICENSE'
+      - 'README.md'
+      - '/thinkphp/'
+  pull_request:
+    branches:
+      - master
+    paths-ignore:
+      - '.*'
+      - 'LICENSE'
+      - 'README.md'
+      - '/thinkphp/'
+
+jobs:
+
+  review:
+    uses: twbworld/proxy/.github/workflows/review.yml@main
+    secrets: inherit #传递所有secrets, 被调用的不需要接收
+
+  dependency-review:
+    if: github.base_ref != '' || github.head_ref != ''
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/dependency-review-action@v3
