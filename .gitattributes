@@ -1,6 +1,8 @@
 # github显示的默认语言
 
-*.vue linguist-language=js
+*.js linguist-language=php
+*.vue linguist-language=php
+*.html linguist-language=php
 
 
 
